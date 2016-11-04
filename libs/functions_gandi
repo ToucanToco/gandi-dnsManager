@@ -1,0 +1,113 @@
+
+###############################################################################
+#
+#       Gandi Functions
+#
+###############################################################################
+
+
+# set up environment and credentials
+#       Usage:
+#		_gandi_setupAccount
+
+_gandi_setupAccount() {
+
+	if [[ ! -d "${DNSMANAGER_VIRTUALENV_DIR}" ]]
+	then
+		_printSubStep "virtualenv missing, let's create it"
+		virtualenv "${VIRTUALENV_NAME}"
+		[[ $? -ne 0 ]] && _fatal "_gandi_setupAccount - problem to create virtualenv ${VIRTUALENV_NAME}"
+
+	fi
+
+	source ${DNSMANAGER_VIRTUALENV_ACTIVATE}
+	[[ $? -ne 0 ]] && _fatal "Problem to load the virtual env"
+
+	which gandi > /dev/null 2>&1
+	if [[ $? -ne 0 ]]
+	then
+		_printSubStep "gandi cli missing, let's install it"
+		pip install gandi.cli
+		[[ $? -ne 0 ]] && _fatal "_gandi_setupAccount - problem to install gandi.cli python package"
+	fi
+
+	_printSubStep "init gandi credentials - cf ${GANDI_API_SETUP_URL}"
+	gandi setup
+	[[ $? -ne 0 ]] && _fatal "_gandi_setupAccount - problem to init your gandi credentials"
+
+	return 0
+}
+
+
+
+# list all domains registered and linked to your account
+#       Usage:
+#		_gandi_listDomains
+
+_gandi_listDomains() {
+	gandi domain list
+	[[ $? -ne 0 ]] && _fatal "_gandi_listDomains - problem to create list all domains"
+
+	return 0
+}
+
+
+# dump from Gandi the latest version of a given DNS zone
+#       Usage:
+#		_gandi_getLastDomainZone $domain_name
+#		_gandi_getLastDomainZone toucantoco.guru
+
+_gandi_getLastDomainZone() {
+
+	local DNSMANAGER_DOMAIN="$1"
+	local DOMAIN_ZONE_FILE="${DOMAIN_ZONE_DIR}/${DNSMANAGER_DOMAIN}.txt"
+	local DOMAIN_ZONE_ACTIVE_FILE="${DOMAIN_ZONE_DIR}/${DNSMANAGER_DOMAIN}.active.txt"
+
+	[[ -z "${DNSMANAGER_DOMAIN}" ]] && _fatal "_gandi_getLastDomainZone - need to specify a domain - see help if needed"
+	
+	gandi record list "${DNSMANAGER_DOMAIN}" --limit 500 --format text > "${DOMAIN_ZONE_ACTIVE_FILE}"
+	if [[ $? -ne 0 ]]
+	then
+		[[ -e "${DOMAIN_ZONE_ACTIVE_FILE}" ]] && rm "${DOMAIN_ZONE_ACTIVE_FILE}"
+		_fatal "_gandi_getLastDomainZone - problem to dump zone for ${DNSMANAGER_DOMAIN}"
+	fi
+
+	if [[ ! -e "${DOMAIN_ZONE_FILE}" ]]
+	then
+		mv "${DOMAIN_ZONE_ACTIVE_FILE}" "${DOMAIN_ZONE_FILE}"
+		[[ $? -ne 0 ]] && _fatal "_gandi_getLastDomainZone - problem to create ${DOMAIN_ZONE_FILE} from ${DOMAIN_ZONE_ACTIVE_FILE}"
+
+		return 0
+	fi
+
+	local SHA1_ACTIVE=`sha1sum ${DOMAIN_ZONE_ACTIVE_FILE} | cut -f1 -d ' '` 
+	local SHA1_CURRENT=`sha1sum ${DOMAIN_ZONE_FILE} | cut -f1 -d ' '`
+
+	[[ "${SHA1_ACTIVE}" == "${SHA1_CURRENT}" ]] && rm "${DOMAIN_ZONE_ACTIVE_FILE}" && return 1
+
+	mv "${DOMAIN_ZONE_ACTIVE_FILE}" "${DOMAIN_ZONE_FILE}"
+	[[ $? -ne 0 ]] && _fatal "_gandi_getLastDomainZone - problem to create ${DOMAIN_ZONE_FILE} from ${DOMAIN_ZONE_ACTIVE_FILE}"
+
+	return 0
+}
+
+
+# update a given zone with the current DNS zone file in dns_zones/
+#       Usage:
+#		_gandi_updateDomainZone $domain_name
+#		_gandi_updateDomainZone toucantoco.guru
+
+_gandi_updateDomainZone() {
+
+	local DNSMANAGER_DOMAIN="$1"
+	local DOMAIN_ZONE_FILE="${DOMAIN_ZONE_DIR}/${DNSMANAGER_DOMAIN}.txt"
+
+	[[ -z "${DNSMANAGER_DOMAIN}" ]] && _fatal "_gandi_updatetDomainZone - need to specify a domain - see help if needed"
+
+	[[ ! -e "${DOMAIN_ZONE_FILE}" ]] && _fatal "_gandi_updateDomainZone - don't find ${DOMAIN_ZONE_FILE} - unable to update ${DNSMANAGER_DOMAIN}"
+
+	gandi record update "${DNSMANAGER_DOMAIN}" -f "${DOMAIN_ZONE_FILE}"
+	[[ $? -ne 0 ]] && _fatal "_gandi_getLastDomainZone - problem to update zone for ${DNSMANAGER_DOMAIN}"
+
+	return 0
+}

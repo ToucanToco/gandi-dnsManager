@@ -1,0 +1,13 @@
+###############################################################################
+#
+#       Misc Vars
+#
+###############################################################################
+
+VIRTUALENV_NAME='.pyenvGandi'
+DNSMANAGER_VIRTUALENV_DIR="${DNSMANAGER_DIR}/${VIRTUALENV_NAME}"
+DNSMANAGER_VIRTUALENV_ACTIVATE="${DNSMANAGER_VIRTUALENV_DIR}/bin/activate"
+
+DOMAIN_ZONE_DIR="${DNSMANAGER_DIR}/dns_zones"
+
+GANDI_API_SETUP_URL='https://www.gandi.net/admin/api_key'

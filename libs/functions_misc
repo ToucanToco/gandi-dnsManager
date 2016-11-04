@@ -1,0 +1,35 @@
+
+###############################################################################
+#
+#       Misc Functions
+#
+###############################################################################
+
+
+# print a critical message in red and exit 1
+#       Usage:
+#               _fatal "There are big problems"
+_fatal() {
+	_printRed "`date`\t::\t$1"
+	exit 1
+}
+
+
+# print just the help
+#       Usage:
+#		_help
+_help() {
+	_printBlue "dnsManager help"
+	echo -e "Basic script to manage your Gandi DNS zones"
+	echo -e "\tUsage:"
+	echo -e "\t\t$0 <setupAccount|listDomains|updateDomainZone|getLastDomainZone> <domain_name>"
+	echo -e "\nsetupAccount"
+	echo -e "\tset up your environment and credentials"
+	echo -e "listDomains"
+	echo -e "\tlist all domains registered and linked to your account"
+	echo -e "updateDomainZone domain_name"
+	echo -e "\tupdate a given zone with the current DNS zone file in dns_zones/"
+	echo -e "getLastDomainZone domain_name"
+	echo -e "\tdump from Gandi the latest version of a given DNS zone\n"
+	exit 2
+}

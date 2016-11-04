@@ -1,0 +1,32 @@
+###############################################################################
+#
+#       Common Output Functions
+#
+###############################################################################
+
+
+# print text in a given color
+#       Usage:
+#               _printRed "All my text in red"
+#               _printGreen "All my text in green"
+#               _printBlue "All my text in blue"
+
+_printRed() {
+	echo -e "${COLOR_RED}$1${COLOR_WHITE}"
+}
+
+_printBlue() {
+	echo -e "${COLOR_BLUE}$1${COLOR_WHITE}"
+}
+
+_printGreen() {
+	echo -e "${COLOR_GREEN}$1${COLOR_WHITE}"
+}
+
+_printStep() {
+	echo -e "\n`date`\t::\t${COLOR_GREEN}$1${COLOR_WHITE}"
+}
+
+_printSubStep() {
+	echo -e "\n\t\t\t- ${COLOR_BLUE}$1${COLOR_WHITE}"
+}

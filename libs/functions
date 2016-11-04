@@ -1,0 +1,8 @@
+###############################################################################
+#
+#       Load All Functions
+#
+###############################################################################
+
+# Loop to load every functions
+for f in ${DNSMANAGER_DIR}/libs/functions_*;do [[ -e $f ]] && source $f;done

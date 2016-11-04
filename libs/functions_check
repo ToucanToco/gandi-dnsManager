@@ -1,0 +1,22 @@
+
+###############################################################################
+#
+#       Check Functions
+#
+###############################################################################
+
+
+# check if the virtualEnv is here
+#       Usage:
+#       	_check_virtualEnv
+
+_check_virtualEnv() {
+
+	[[ -d "${DNSMANAGER_VIRTUALENV_DIR}" ]] && return 0
+
+	_printRed "${DNSMANAGER_VIRTUALENV_DIR} doesn't exist!"
+	echo -e "Please create the python virtual env by followin the README instructions"
+	echo -e "Please setup your environment by launching:"
+	echo -e "\t\t\t$0 setupAccount"
+	exit 1
+}
