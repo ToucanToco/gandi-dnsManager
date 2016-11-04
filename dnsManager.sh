@@ -67,7 +67,7 @@ case ${DNSMANAGER_ACTION} in
 		_printStep "Please don't forget to commit your changes"
 		echo -e "\tsuggestion:"
 		echo -e "\t\t\tgit add ${DOMAIN_ZONE_DIR}/${DNSMANAGER_DOMAIN}.txt"
-		echo -e "\t\t\tgit commit '${DNSMANAGER_DOMAIN} :: update/delete/add entries'"
+		echo -e "\t\t\tgit commit -m '${DNSMANAGER_DOMAIN} :: update/delete/add entries'"
 		;;
 
 	getLastDomainZone)
