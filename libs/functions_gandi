@@ -62,9 +62,13 @@ _gandi_getLastDomainZone() {
 	local DNSMANAGER_DOMAIN="$1"
 	local DOMAIN_ZONE_FILE="${DOMAIN_ZONE_DIR}/${DNSMANAGER_DOMAIN}.txt"
 	local DOMAIN_ZONE_ACTIVE_FILE="${DOMAIN_ZONE_DIR}/${DNSMANAGER_DOMAIN}.active.txt"
+	local SHA1_BIN="sha1sum"
 
 	[[ -z "${DNSMANAGER_DOMAIN}" ]] && _fatal "_gandi_getLastDomainZone - need to specify a domain - see help if needed"
 	
+	type ${SHA1_BIN} > /dev/null 2&>1
+	[[ $? -ne 0 ]] && SHA1_BIN="shasum"
+
 	gandi record list "${DNSMANAGER_DOMAIN}" --limit 500 --format text > "${DOMAIN_ZONE_ACTIVE_FILE}"
 	if [[ $? -ne 0 ]]
 	then
@@ -80,8 +84,8 @@ _gandi_getLastDomainZone() {
 		return 0
 	fi
 
-	local SHA1_ACTIVE=`sha1sum ${DOMAIN_ZONE_ACTIVE_FILE} | cut -f1 -d ' '` 
-	local SHA1_CURRENT=`sha1sum ${DOMAIN_ZONE_FILE} | cut -f1 -d ' '`
+	local SHA1_ACTIVE=`${SHA1_BIN} ${DOMAIN_ZONE_ACTIVE_FILE} | cut -f1 -d ' '` 
+	local SHA1_CURRENT=`${SHA1_BIN} ${DOMAIN_ZONE_FILE} | cut -f1 -d ' '`
 
 	[[ "${SHA1_ACTIVE}" == "${SHA1_CURRENT}" ]] && rm "${DOMAIN_ZONE_ACTIVE_FILE}" && return 1
 
