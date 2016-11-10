@@ -66,7 +66,7 @@ _gandi_getLastDomainZone() {
 
 	[[ -z "${DNSMANAGER_DOMAIN}" ]] && _fatal "_gandi_getLastDomainZone - need to specify a domain - see help if needed"
 	
-	type ${SHA1_BIN} > /dev/null 2&>1
+	type ${SHA1_BIN} > /dev/null 2>&1
 	[[ $? -ne 0 ]] && SHA1_BIN="shasum"
 
 	gandi record list "${DNSMANAGER_DOMAIN}" --limit 500 --format text > "${DOMAIN_ZONE_ACTIVE_FILE}"
