@@ -30,10 +30,30 @@ $ ./dnsManager.sh setupAccount
 
 
 ## Use it!
-See the help to list all available actions
+
+### List all domains
+```
+$ ./dnsManager.sh listDomains
+```
+List all domains registered and linked to your account
+
+### Update Domain Zone
+```
+$ ./dnsManager.sh updateDomainZone mydomain.com
+```
+Update the zone with the current DNS zone file described in `dns_zones/mydomain.com.txt`
+
+### Get Last Domain Zone
+```
+$ ./dnsManager.sh getLastDomainZone mydomain.com
+```
+Dump from Gandi the latest version of a given DNS zone and store it in `dns_zones/mydomain.com.txt`
+
+### Display Help
 ```
 $ ./dnsManager.sh help
 ```
+See the help to list all available actions
 
 
 ## Notes
