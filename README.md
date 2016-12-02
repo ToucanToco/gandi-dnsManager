@@ -7,6 +7,8 @@ The aims of this project:
 This script is a basic wrapper of [Gandi cli python scripts](https://github.com/Gandi/gandi.cli)
 to only manage DNS.
 
+We wrote an [How To article](http://toucantoco.com/devops/2016/11/10/gandi-dns-manager.html) to help you to use it :)
+
 
 ## Requirements
 It's mandatory to have `virtualenv`.
